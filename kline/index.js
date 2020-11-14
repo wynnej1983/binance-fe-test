@@ -1,4 +1,4 @@
-(async function() {
+(async function () {
   let seriesData = await fetchSeriesData();
   const canvas = document.getElementById('kline');
   const YAXIS_WIDTH = 170;
@@ -145,7 +145,7 @@
     ctx.closePath();
     ctx.stroke();
 
-    const ticks = calculateTicks(yMin, yMax, 20);
+    const ticks = calculateTicks(yMin, yMax, 15);
     ticks.forEach((tick, idx) => {
       if (idx === 0) return; //dont render first tick so axis looks better
       ctx.moveTo(
@@ -159,7 +159,7 @@
       ctx.closePath();
       ctx.stroke();
 
-      ctx.font = '26px serif';
+      ctx.font = '1em serif';
       ctx.textBaseline = 'middle';
       ctx.fillText(
         tick.toFixed(2),
@@ -184,7 +184,7 @@
     ctx.closePath();
     ctx.stroke();
 
-    ctx.font = '26px serif';
+    ctx.font = '1em serif';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = o.gt(c) ? 'rgba(203,61,78)' : 'rgba(98,187,137,1)';
     ctx.fillText(c.toNumber(), CANVAS_WIDTH + 25, yOffset);
@@ -211,4 +211,3 @@
     return ticks;
   }
 })();
-
