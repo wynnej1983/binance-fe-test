@@ -199,6 +199,9 @@
     ctx.textBaseline = 'middle';
     ctx.fillStyle = o.gt(c) ? 'rgba(203,61,78)' : 'rgba(98,187,137,1)';
     ctx.fillText(c.toNumber(), CANVAS_WIDTH + 25, yOffset);
+
+    // browser tab text
+    document.title = c.toNumber() + ' | ' + symbol;
   }
   function calculateTicks(min, max, tickCount) {
     var span = max - min,
