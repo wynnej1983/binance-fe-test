@@ -1,7 +1,9 @@
 (async function () {
-  let seriesData = await fetchSeriesData();
+  const urlParams = new URLSearchParams(window.location.search);
+  const symbol = urlParams.get('symbol') || 'BTCUSDT';
+  let seriesData = await fetchSeriesData(symbol);
   const canvas = document.getElementById('kline');
-  const YAXIS_WIDTH = 170;
+  const YAXIS_WIDTH = 120;
   let zoom = 5;
   let translate = -50;
   renderKlines(seriesData, zoom, translate);
@@ -26,9 +28,11 @@
   });
 
   // [time, open, high, low, close][]
-  function fetchSeriesData() {
+  function fetchSeriesData(symbol) {
     return new Promise((resolve, reject) => {
-      fetch('https://www.binance.com/api/v1/klines?symbol=BTCUSDT&interval=1m')
+      fetch(
+        `https://www.binance.com/api/v1/klines?symbol=${symbol}&interval=1m`
+      )
         .then(async (res) => {
           const data = await res.json();
           const result = data.map(([time, open, high, low, close]) => [
@@ -76,6 +80,13 @@
     const CANVAS_HEIGHT = canvas.height;
     const KLINE_WIDTH = (zoomFactor * CANVAS_WIDTH) / seriesData.length;
     const KLINE_MARGIN = KLINE_WIDTH * 0.1;
+
+    // current symbol
+    ctx.font = '7em serif';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(75,80,90,0.1)';
+    ctx.fillText(symbol, CANVAS_WIDTH * 0.25, CANVAS_HEIGHT * 0.5);
+
     const kLinesInViewStartIndex = Math.round(
       _.clamp(
         seriesData.length - (CANVAS_WIDTH + translate) / KLINE_WIDTH - 1,
