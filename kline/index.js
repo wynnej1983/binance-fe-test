@@ -173,7 +173,7 @@
       ctx.font = '1em serif';
       ctx.textBaseline = 'middle';
       ctx.fillText(
-        tick.toFixed(2),
+        new Big(tick).prec(10),
         CANVAS_WIDTH + 25,
         CANVAS_HEIGHT - (CANVAS_HEIGHT * idx) / ticks.length
       );
