@@ -14,7 +14,7 @@
     translate += event.deltaX * -3;
     renderKlines(seriesData, zoom, translate);
   });
-  subcribe((data) => {
+  subcribe(symbol, (data) => {
     // data: [time, open, high, low, close]
     // console.log('subcribe: ', data);
     if (data[0] === seriesData[seriesData.length - 1][0]) {
@@ -47,10 +47,10 @@
         .catch((e) => reject(e));
     });
   }
-  function subcribe(success) {
+  function subcribe(symbol, success) {
     try {
       const socket = new WebSocket(
-        'wss://stream.binance.com/stream?streams=btcusdt@kline_1m'
+        `wss://stream.binance.com/stream?streams=${symbol}@kline_1m`
       );
       socket.onmessage = (e) => {
         const res = JSON.parse(e.data);
