@@ -1,4 +1,4 @@
-(async function () {
+(async function() {
   const urlParams = new URLSearchParams(window.location.search);
   const symbol = urlParams.get('symbol') || 'BTCUSDT';
   let seriesData = await fetchSeriesData(symbol);
@@ -50,7 +50,7 @@
   function subcribe(symbol, success) {
     try {
       const socket = new WebSocket(
-        `wss://stream.binance.com/stream?streams=${symbol}@kline_1m`
+        `wss://stream.binance.com/stream?streams=${symbol.toLowerCase()}@kline_1m`
       );
       socket.onmessage = (e) => {
         const res = JSON.parse(e.data);
