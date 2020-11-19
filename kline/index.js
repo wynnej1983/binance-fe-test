@@ -1,4 +1,4 @@
-(async function () {
+(async function() {
   const urlParams = new URLSearchParams(window.location.search);
   const symbol = urlParams.get('symbol') || 'BTCUSDT';
   let seriesData = await fetchSeriesData(symbol);
@@ -50,7 +50,7 @@
   function subcribe(symbol, success) {
     try {
       const socket = new WebSocket(
-        `wss://stream.binance.com/stream?streams=${symbol}@kline_1m`
+        `wss://stream.binance.com/stream?streams=${symbol.toLowerCase()}@kline_1m`
       );
       socket.onmessage = (e) => {
         const res = JSON.parse(e.data);
@@ -109,41 +109,29 @@
       seriesData.slice(kLinesInViewStartIndex, kLinesInViewEndIndex),
       (data) => data[2]
     )[2];
-    seriesData.forEach((data, idx) => {
+    ctx.beginPath();
+    seriesData.forEach((data, idx, _seriesData) => {
       const t = data[0];
-      const o = new Big(data[1]);
       const h = new Big(data[2]);
-      const l = new Big(data[3]);
-      const c = new Big(data[4]);
       const x =
-        idx * KLINE_WIDTH + CANVAS_WIDTH - seriesData.length * KLINE_WIDTH;
-      // bar
-      const oy =
-        CANVAS_HEIGHT -
-        (o.minus(yMin).toNumber() / new Big(yMax).minus(yMin).toNumber()) *
-          CANVAS_HEIGHT;
-      ctx.fillStyle = o.gt(c) ? 'rgba(203,61,78)' : 'rgba(98,187,137,1)';
-      ctx.fillRect(
-        x + KLINE_MARGIN + translate,
-        oy,
-        KLINE_WIDTH - 2 * KLINE_MARGIN,
-        (o.minus(c).toNumber() / new Big(yMax).minus(yMin).toNumber()) *
-          CANVAS_HEIGHT
-      );
-      // stick
+        (idx === 0 ? 0 : idx + 1) * KLINE_WIDTH +
+        CANVAS_WIDTH -
+        seriesData.length * KLINE_WIDTH;
       const hy =
         CANVAS_HEIGHT -
         (h.minus(yMin).toNumber() / new Big(yMax).minus(yMin).toNumber()) *
           CANVAS_HEIGHT;
-      ctx.fillStyle = o.gt(c) ? 'rgba(203,61,78)' : 'rgba(98,187,137,1)';
-      ctx.fillRect(
-        x + KLINE_WIDTH / 2 + translate,
-        hy,
-        1,
-        (h.minus(l).toNumber() / new Big(yMax).minus(yMin).toNumber()) *
-          CANVAS_HEIGHT
-      );
+      if (idx === 0) {
+        ctx.moveTo(x + translate, yMin);
+        console.log(hy);
+      } else if (idx === seriesData.length - 1) {
+        ctx.lineTo(x + translate, yMin);
+      } else {
+        ctx.lineTo(x + translate, hy);
+      }
+      ctx.fillStyle = '#F8D12F';
     });
+    ctx.fill();
 
     // yaxis
     ctx.fillStyle = 'rgba(20,21,26,1)';
