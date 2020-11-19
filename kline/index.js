@@ -110,24 +110,24 @@
       (data) => data[2]
     )[2];
     ctx.beginPath();
-    seriesData.forEach((data, idx, _seriesData) => {
+    seriesData.forEach((data, idx) => {
       const t = data[0];
       const h = new Big(data[2]);
       const x =
-        (idx === 0 ? 0 : idx + 1) * KLINE_WIDTH +
+        idx * KLINE_WIDTH +
         CANVAS_WIDTH -
-        seriesData.length * KLINE_WIDTH;
+        seriesData.length * KLINE_WIDTH +
+        translate;
       const hy =
         CANVAS_HEIGHT -
         (h.minus(yMin).toNumber() / new Big(yMax).minus(yMin).toNumber()) *
           CANVAS_HEIGHT;
       if (idx === 0) {
-        ctx.moveTo(x + translate, yMin);
-        console.log(hy);
+        ctx.moveTo(x, yMin);
       } else if (idx === seriesData.length - 1) {
-        ctx.lineTo(x + translate, yMin);
+        ctx.lineTo(x, yMin);
       } else {
-        ctx.lineTo(x + translate, hy);
+        ctx.lineTo(x, hy);
       }
       ctx.fillStyle = '#F8D12F';
     });
